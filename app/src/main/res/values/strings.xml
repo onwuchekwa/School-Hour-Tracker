@@ -4,4 +4,6 @@
     <string name="edit_classCode">Enter Class Code</string>
     <string name="btn_addClass">Add Class</string>
     <string name="tv_ClassList">List of Classes</string>
+    <string name="btn_StopTime">Stop Time</string>
+    <string name="btn_StartTime">Start Time</string>
 </resources>
