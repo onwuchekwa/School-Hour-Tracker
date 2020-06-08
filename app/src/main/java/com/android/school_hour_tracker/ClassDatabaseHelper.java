@@ -66,4 +66,45 @@ public class ClassDatabaseHelper extends SQLiteOpenHelper {
         return rawData;
     }
 
+    /**
+     * Get class Id using the class name
+     * @param className name of class
+     * @return Id of class
+     */
+    public Cursor getClassId(String className) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT " + CLASS_ID + " FROM " + TABLE_NAME +
+                " WHERE " + CLASS_NAME + " = '" + className + "'";
+        Cursor rawData = db.rawQuery(selectQuery, null);
+        return rawData;
+    }
+
+    /**
+     * Updates class table
+     * @param classId classId
+     * @param classCode classCode
+     * @param className className
+     */
+    public void updateClassData(int classId, String classCode, String className) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String updateQuery = "UPDATE " + TABLE_NAME + " SET " + CLASS_CODE +
+                " = '" + classCode + "', " + CLASS_NAME + " = '" + className +
+                "' WHERE " + CLASS_ID + " = '" + classId + "'";
+        Log.d(TAG, "Update class query: " + updateQuery);
+        Log.d(TAG, "Updating class code to: " + classCode + " class name to: " + className);
+        db.execSQL(updateQuery);
+    }
+
+    /**
+     * deletes class from the database
+     * @param classId get class id from intent
+     */
+    public void deleteClassData(int classId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteQuery = "DELETE FROM " + TABLE_NAME + " WHERE " +
+                CLASS_ID + " = '" + classId + "'";
+        Log.d(TAG, "Delete class query: " + deleteQuery);
+        Log.d(TAG, "Deleting : " + classId + " from database");
+        db.execSQL(deleteQuery);
+    }
 }

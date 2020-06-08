@@ -63,12 +63,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        /**
+         * Defining a click event listener for the button "ListView"
+         */
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i;
-                i = new Intent(view.getContext(), Hour_Log.class);
-                startActivity(i);
+                String classInfoData = parent.getItemAtPosition(position).toString();
+                String className = classInfoData.substring(classInfoData.indexOf("-") + 1).trim();
+                String classCode = classInfoData.substring(0, classInfoData.indexOf("-")).trim();
+                Log.d(TAG, "You clicked on " + classCode + " and " + className);
+                Cursor classIdData = mDatabaseHelper.getClassId(className);
+                int singleClassId = -1;
+                while (classIdData.moveToNext()) {
+                    singleClassId = classIdData.getInt(0);
+                }
+                if(singleClassId > -1) {
+                    Log.d(TAG, "onItemClick: The Class ID is: " + singleClassId);
+                    Intent intent = new Intent(MainActivity.this, ClassNavigationOptions.class);
+                    intent.putExtra("classId", singleClassId);
+                    intent.putExtra("classCode", classCode);
+                    intent.putExtra("className", className);
+                    startActivity(intent);
+                } else {
+                    toastMessage("There is no ID associated with that class name!");
+                }
             }
         });
     }
