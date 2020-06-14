@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class Hour_Log extends AppCompatActivity {
-    private static final String TAG = "Hour_LogActivity";
+    private static final String TAG = "HourLogActivity";
 
     int numClassId;
     String strClassCode, strClassName;
