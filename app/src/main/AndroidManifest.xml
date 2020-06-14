@@ -30,7 +30,7 @@
         <activity
             android:name=".Hour_Log"
             android:label="Log Hours Spend"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ClassNavigationOptions">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data

@@ -4,7 +4,7 @@
     <string name="edit_classCode">Enter Class Code</string>
     <string name="btn_addClass">Add Class</string>
     <string name="tv_ClassList">List of Classes</string>
-    <string name="btn_StopTime">Stop Time</string>
+    <string name="btn_PauseTime">Pause Time</string>
     <string name="btn_StartTime">Start Time</string>
     <string name="tv_classCode_lbl">Class Code:</string>
     <string name="tv_class_info">Class Information</string>
@@ -14,4 +14,6 @@
     <string name="btn_record_time">Record Hours</string>
     <string name="btn_update">Update Class</string>
     <string name="btn_delete">Delete Class</string>
+    <string name="btn_ResetTime">Reset TIme</string>
+    <string name="btn_SaveTime">Save Time</string>
 </resources>

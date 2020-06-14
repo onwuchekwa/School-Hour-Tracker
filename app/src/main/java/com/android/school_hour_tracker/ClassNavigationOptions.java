@@ -51,9 +51,12 @@ public class ClassNavigationOptions extends AppCompatActivity {
         btnRecordHours.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i;
-                i = new Intent(ClassNavigationOptions.this, Hour_Log.class);
-                startActivity(i);
+                if(numClassId > -1) {
+                    Log.d(TAG, "onBtnRecordHours: The Class ID is: " + numClassId);
+                    createIntent(Hour_Log.class);
+                } else {
+                    toastMessage("There is no ID associated with that class name!");
+                }
             }
         });
 
@@ -64,17 +67,25 @@ public class ClassNavigationOptions extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(numClassId > -1) {
-                    Log.d(TAG, "onButtonClick: The Class ID is: " + numClassId);
-                    Intent intent = new Intent(ClassNavigationOptions.this, ManageClassActivity.class);
-                    intent.putExtra("classId", numClassId);
-                    intent.putExtra("classCode", strClassCode);
-                    intent.putExtra("className", strClassName);
-                    startActivity(intent);
+                    Log.d(TAG, "onBtnManageClass: The Class ID is: " + numClassId);
+                    createIntent(ManageClassActivity.class);
                 } else {
                     toastMessage("There is no ID associated with that class name!");
                 }
             }
         });
+    }
+
+    /**
+     * Pass values across different Activities
+     * @param nameOfClass class to receive intent
+     */
+    public void createIntent(Class nameOfClass) {
+        Intent intent = new Intent(ClassNavigationOptions.this, nameOfClass);
+        intent.putExtra("classId", numClassId);
+        intent.putExtra("classCode", strClassCode);
+        intent.putExtra("className", strClassName);
+        startActivity(intent);
     }
 
     /**
