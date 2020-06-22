@@ -14,7 +14,7 @@ public class ManageClassActivity extends AppCompatActivity {
 
     Button btnUpdate, btnDelete;
     EditText classId, classText;
-    ClassDatabaseHelper mDatabaseHelper;
+    DatabaseHelper mDatabaseHelper;
 
     private int numClassId;
     String strClassCode, strClassName;
@@ -33,7 +33,7 @@ public class ManageClassActivity extends AppCompatActivity {
         classText = (EditText) findViewById(R.id.editClassName);
 
         /* Initialize Database Helper Class */
-        mDatabaseHelper = new ClassDatabaseHelper(this);
+        mDatabaseHelper = new DatabaseHelper(this);
 
         // Get Intent from the MainActivity
         Intent intent = getIntent();

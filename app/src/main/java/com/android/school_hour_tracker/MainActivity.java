@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    ClassDatabaseHelper mDatabaseHelper;
+    DatabaseHelper mDatabaseHelper;
     private Button btnAdd;
     private EditText classId;
     private EditText classText;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.lvClassList);
 
         /* Initialize Database Helper Class */
-        mDatabaseHelper = new ClassDatabaseHelper(this);
+        mDatabaseHelper = new DatabaseHelper(this);
         populateListView();
 
         /**

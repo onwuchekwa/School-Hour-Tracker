@@ -1,17 +1,22 @@
 package com.android.school_hour_tracker;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class Hour_Log extends AppCompatActivity {
@@ -25,6 +30,8 @@ public class Hour_Log extends AppCompatActivity {
     long pauseOffsetTime;
     Button btnStart, btnPause, btnReset, btnSave;
     String currentDate, startTime, endTime;
+    ListView lvStudyHourList;
+    DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +51,20 @@ public class Hour_Log extends AppCompatActivity {
         /* Reference to the Chronometer of the layout activity_hour_log.xml */
         chronometer = (Chronometer) findViewById(R.id.chronometerTimer);
 
+        lvStudyHourList = (ListView) findViewById(R.id.lvHourSpent);
+
         // Get Intent from the MainActivity
         Intent intent = getIntent();
+
+        /* Initialize Database Helper Class */
+        mDatabaseHelper = new DatabaseHelper(this);
 
         // Get Class ID passed from an extra
         numClassId = intent.getIntExtra("classId", -1);
         strClassCode = intent.getStringExtra("classCode");
         strClassName = intent.getStringExtra("className");
+
+        populateStudyHourListView();
 
         /* Pass text to the EditText fields */
         if((!strClassCode.equals("") && (!(strClassName != null && strClassName.equals(""))))) {
@@ -106,13 +120,14 @@ public class Hour_Log extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Change this to save the data to the database
-                String timeSpend = String.valueOf(chronometer.getText());
+                String timeSpend = chronometer.getText().toString();
                 stopTime("Timer Stopped and Saved!");
-                //TODO: Timer to be reset after inserting to the database
-                Log.d(TAG, "Date: " + currentDate + " Time Started: " + startTime + " Actual Time Spend: " + timeSpend +
-                        " Time Ended: " + endTime);
-                //TODO: Populate ListView with Date and Time Spent
+                if(!(timeSpend.equals("00:00"))) {
+                    addStudyTime(numClassId, currentDate, startTime, endTime, timeSpend);
+                    populateStudyHourListView();
+                } else {
+                    toastMessage("You have not timed your study. Start timer first");
+                }
             }
         });
     }
@@ -140,7 +155,45 @@ public class Hour_Log extends AppCompatActivity {
         Log.d(TAG, toastMsg);
         chronometer.setBase(SystemClock.elapsedRealtime());
         pauseOffsetTime = 0;
+        startTime = null;
         toastMessage(toastMsg);
+    }
+
+    public void addStudyTime(int recordClassId, String recordDate, String recordStartTime, String recordEndTime,
+                             String recordActualTime) {
+        boolean insertData = mDatabaseHelper.addStudyRecord(recordClassId, recordDate, recordStartTime, recordEndTime, recordActualTime);
+        if(insertData) {
+            resetTime("Time Reset");
+            toastMessage("Study hour Successfully Inserted");
+        } else {
+            toastMessage("Something went wrong");
+        }
+    }
+
+    public void populateStudyHourListView() {
+        Log.d(TAG, "populateStudyHourListView: Displaying study hours in the ListView");
+        //Get data and append to the list
+        Cursor studyHourData = mDatabaseHelper.getAllStudyHours(numClassId);
+
+        /* Items from database is stored in this ArrayList variable */
+        ArrayList<String> studyHourListData = new ArrayList<>();
+        /* Loop through the ArrayList and add its values to the Cursor */
+        if(studyHourData.getCount() == 0) {
+            toastMessage("The database is empty.");
+        } else {
+            while (studyHourData.moveToNext()) {
+                studyHourListData.add("Study Date: " + studyHourData.getString(0) + ", "
+                        + "Time Spent: " + studyHourData.getString(3));
+            }
+        }
+        /* ArrayAdapter to set items to ListView */
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, studyHourListData);
+        adapter.notifyDataSetChanged();
+
+        /* Setting the adapter to the ListView */
+        lvStudyHourList.setAdapter(adapter);
+
+        System.out.println("numID: " + numClassId);
     }
 
     /**
