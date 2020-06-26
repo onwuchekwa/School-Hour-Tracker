@@ -16,4 +16,5 @@
     <string name="btn_delete">Delete Class</string>
     <string name="btn_ResetTime">Reset TIme</string>
     <string name="btn_SaveTime">Save Time</string>
+    <string name="btn_Report">Generate Report</string>
 </resources>
