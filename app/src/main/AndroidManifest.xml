@@ -28,7 +28,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".Hour_Log"
+            android:name=".HourLog"
             android:label="Log Hours Spend"
             android:parentActivityName=".ClassNavigationOptions">
 
@@ -46,6 +46,26 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".GenerateStudyReport"
+            android:label="Generate Study Report"
+            android:parentActivityName=".HourLog">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HourLog" />
+        </activity>
+        <activity
+            android:name=".ManageStudyHour"
+            android:label="Manage Study Hour"
+            android:parentActivityName=".HourLog">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HourLog" />
         </activity>
     </application>
 

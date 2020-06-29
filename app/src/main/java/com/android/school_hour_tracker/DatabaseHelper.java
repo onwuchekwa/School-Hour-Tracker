@@ -145,6 +145,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(deleteQuery);
     }
 
+    /**
+     * adds study record to the database
+     * @param recordClassId gets class id
+     * @param recordDate gets current date
+     * @param recordStartTime gets start time
+     * @param recordEndTime gets end time
+     * @param recordActualTime get actual study time
+     * @return true or false
+     */
     public boolean addStudyRecord(int recordClassId, String recordDate, String recordStartTime, String recordEndTime,
                                   String recordActualTime) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -167,6 +176,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * get all study hours
+     * @param classId get class id
+     * @return cursor
+     */
     public Cursor getAllStudyHours(int classId) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT "
@@ -180,6 +194,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " ON sr." + STUDY_CLASS_ID + " = cl." + CLASS_ID
                 + " WHERE sr." + STUDY_CLASS_ID + " = " + classId
                 + " ORDER BY " + STUDY_RECORD_DATE + " DESC, " + STUDY_RECORD_START_TIME + " DESC";
+        Cursor rawData = db.rawQuery(selectQuery, null);
+        return rawData;
+    }
+
+    /**
+     * Get study Id using the date and time
+     * @param studyDate date of study
+     * @param studyTime time spend
+     * @return Id of study hour
+     */
+    public Cursor getStudyHourId(String studyDate, String studyTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT " + STUDY_RECORD_ID + ", "
+                + STUDY_RECORD_START_TIME + ", " + STUDY_RECORD_END_TIME
+                + " FROM " + STUDY_TABLE_NAME
+                + " WHERE " + STUDY_RECORD_DATE + " = '" + studyDate + "'"
+                + " AND " + STUDY_RECORD_ACTUAL_TIME + " = '" + studyTime + "'";
+        Cursor rawData = db.rawQuery(selectQuery, null);
+        return rawData;
+    }
+
+    public Cursor generateReports(String classCode, String startDate, String endDate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT " + CLASS_CODE + ", "
+                + CLASS_NAME + ", "
+                + "TIME(SUM(STRFTIME('%s', " + STUDY_RECORD_END_TIME + ") - STRFTIME('%s', '00:00:00')) - SUM(STRFTIME('%s', " + STUDY_RECORD_START_TIME + ") - STRFTIME('%s', '00:00:00')), 'unixepoch') AS timeSpend, "
+                + "TIME(SUM(STRFTIME('%s', " + STUDY_RECORD_ACTUAL_TIME + ") - STRFTIME('%s', '00:00:00')), 'unixepoch') AS ActualStudyTime "
+                + "FROM " + STUDY_TABLE_NAME + " r "
+                + "JOIN " + CLASS_TABLE_NAME + " c "
+                + "ON c." + CLASS_ID + " = r." + STUDY_CLASS_ID
+                + " WHERE " + STUDY_RECORD_DATE + " BETWEEN '" + startDate + "' AND '" + endDate + "'"
+                + " AND c." + CLASS_CODE + " = '" + classCode + "'"
+                + " GROUP BY " + CLASS_CODE + ", " + CLASS_NAME
+                + " ORDER BY " + STUDY_RECORD_DATE + " DESC;";
+        Log.d(TAG, selectQuery);
         Cursor rawData = db.rawQuery(selectQuery, null);
         return rawData;
     }

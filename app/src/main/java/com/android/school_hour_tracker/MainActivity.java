@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         btnAdd = (Button) findViewById(R.id.btnAddClass);
 
         /* Reference to the ListView of the layout main.xml */
-        //listView = getListView();
         listView = (ListView) findViewById(R.id.lvClassList);
 
         /* Initialize Database Helper Class */

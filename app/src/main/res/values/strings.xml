@@ -17,4 +17,11 @@
     <string name="btn_ResetTime">Reset TIme</string>
     <string name="btn_SaveTime">Save Time</string>
     <string name="btn_Report">Generate Report</string>
+    <string name="btn_get_report">Generate Study Report</string>
+    <string name="edit_start_date">Enter Report Start Date</string>
+    <string name="edit_end_date">Enter Report End Date</string>
+    <string name="tv_study_detail">What Task Would You Love to Do?</string>
+    <string name="btn_view">View</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_del">Delete</string>
 </resources>

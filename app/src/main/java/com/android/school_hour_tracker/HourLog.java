@@ -2,11 +2,13 @@ package com.android.school_hour_tracker;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -16,27 +18,25 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
-public class Hour_Log extends AppCompatActivity {
+public class HourLog extends AppCompatActivity {
     private static final String TAG = "HourLogActivity";
 
     int numClassId;
-    String strClassCode, strClassName;
+    String strClassCode, strClassName, currentDate, startTime, endTime;;
     TextView lblClassCode, lblClassName;
     Chronometer chronometer;
     boolean isRunning;
     long pauseOffsetTime;
-    Button btnStart, btnPause, btnReset, btnSave;
-    String currentDate, startTime, endTime;
+    Button btnStart, btnPause, btnReset, btnSave, btnReport;
     ListView lvStudyHourList;
     DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hour__log);
+        setContentView(R.layout.activity_hour_log);
 
         /* Reference to the TextViews of the layout activity_hour_log.xml */
         lblClassCode = (TextView) findViewById(R.id.tvClassCode);
@@ -47,6 +47,7 @@ public class Hour_Log extends AppCompatActivity {
         btnPause = (Button) findViewById(R.id.btn_pause);
         btnReset = (Button) findViewById(R.id.btn_reset);
         btnSave = (Button) findViewById(R.id.btn_save);
+        btnReport = (Button) findViewById(R.id.btnGetReport);
 
         /* Reference to the Chronometer of the layout activity_hour_log.xml */
         chronometer = (Chronometer) findViewById(R.id.chronometerTimer);
@@ -65,6 +66,16 @@ public class Hour_Log extends AppCompatActivity {
         strClassName = intent.getStringExtra("className");
 
         populateStudyHourListView();
+
+        // Disable Reset, Save and Pause button
+        btnPause.setEnabled(false);
+        btnSave.setEnabled(false);
+        btnReset.setEnabled(false);
+        if(lvStudyHourList.getCount() == 0) {
+            btnReport.setEnabled(false);
+        } else {
+            btnReport.setEnabled(true);
+        }
 
         /* Pass text to the EditText fields */
         if((!strClassCode.equals("") && (!(strClassName != null && strClassName.equals(""))))) {
@@ -89,7 +100,10 @@ public class Hour_Log extends AppCompatActivity {
                     if(startTime == null || startTime.equals(""))
                         startTime = new SimpleDateFormat("HH:mm:ss", Locale.US).format(Calendar.getInstance().getTime());
                     toastMessage("Timer Started");
-                    System.out.println(startTime);
+                    btnStart.setEnabled(false);
+                    btnPause.setEnabled(true);
+                    btnReset.setEnabled(true);
+                    btnSave.setEnabled(true);
                 }
             }
         });
@@ -101,6 +115,9 @@ public class Hour_Log extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 stopTime("Timer Paused");
+                btnStart.setText("Resume");
+                btnPause.setEnabled(false);
+                btnStart.setEnabled(true);
             }
         });
 
@@ -111,6 +128,16 @@ public class Hour_Log extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                resetTime("Timer Reset");
+                btnStart.setText("Start Time");
+                btnStart.setEnabled(true);
+                btnPause.setEnabled(false);
+                btnSave.setEnabled(false);
+                btnReset.setEnabled(false);
+                if(lvStudyHourList.getCount() == 0) {
+                    btnReport.setEnabled(false);
+                } else {
+                    btnReport.setEnabled(true);
+                }
             }
         });
 
@@ -120,13 +147,86 @@ public class Hour_Log extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String timeSpend = chronometer.getText().toString();
+                CharSequence mChronometer = chronometer.getText();
+                String timeSpend;
+                if(mChronometer.length() == 5) {
+                    timeSpend = "00:" + mChronometer.toString();
+                } else if(mChronometer.length() == 7) {
+                    timeSpend = "0" + mChronometer.toString();
+                } else {
+                    timeSpend = mChronometer.toString();
+                }
+
                 stopTime("Timer Stopped and Saved!");
+
                 if(!(timeSpend.equals("00:00"))) {
                     addStudyTime(numClassId, currentDate, startTime, endTime, timeSpend);
                     populateStudyHourListView();
+                    btnStart.setText("Start Time");
+                    btnStart.setEnabled(true);
+                    btnPause.setEnabled(false);
+                    btnSave.setEnabled(false);
+                    btnReset.setEnabled(false);
+                    if(lvStudyHourList.getCount() == 0) {
+                        btnReport.setEnabled(false);
+                    } else {
+                        btnReport.setEnabled(true);
+                    }
                 } else {
                     toastMessage("You have not timed your study. Start timer first");
+                }
+            }
+        });
+
+        /**
+         * Defining a click event listener for the button "Generate Report"
+         */
+        btnReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(numClassId > -1) {
+                     Log.d(TAG, "btnGetReport: The Class ID is: " + numClassId);
+                     Intent intent = new Intent(HourLog.this, GenerateStudyReport.class);
+                     intent.putExtra("classId", numClassId);
+                     intent.putExtra("classCode", strClassCode);
+                     intent.putExtra("className", strClassName);
+                    startActivity(intent);
+                } else {
+                    toastMessage("There is no ID associated with that class name!");
+                }
+            }
+        });
+
+        /**
+         * Defining a click event listener for the button "ListView"
+         */
+        lvStudyHourList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String classStudyData = parent.getItemAtPosition(position).toString();
+                String actualStudyTime = classStudyData.substring(classStudyData.indexOf(",") + 13).trim();
+                String studyDate = classStudyData.substring(11, classStudyData.indexOf(",")).trim();
+                Log.d(TAG, "You clicked on " + studyDate + " and " + actualStudyTime);
+                Cursor studyIdData = mDatabaseHelper.getStudyHourId(studyDate, actualStudyTime);
+                // Log.d(TAG, DatabaseUtils.dumpCursorToString(studyIdData));
+                int singleStudyId = -1;
+                String studyTimeStarted = null, studyTimeEnded = null;
+                while (studyIdData.moveToNext()) {
+                    singleStudyId = studyIdData.getInt(0);
+                    studyTimeStarted = studyIdData.getString(1);
+                    studyTimeEnded = studyIdData.getString(2);
+                }
+                if(singleStudyId > -1) {
+                    Log.d(TAG, "onItemClick: The Study ID is: " + singleStudyId);
+                    Intent intent = new Intent(HourLog.this, ManageStudyHour.class);
+                    intent.putExtra("studyId", singleStudyId);
+                    intent.putExtra("studyDate", studyDate);
+                    intent.putExtra("actualStudyTime", actualStudyTime);
+                    intent.putExtra("studyTimeStarted", studyTimeStarted);
+                    intent.putExtra("studyTimeEnded", studyTimeEnded);
+                    startActivity(intent);
+                } else {
+                    toastMessage("There is no ID associated with that study date and time!");
                 }
             }
         });
@@ -153,6 +253,10 @@ public class Hour_Log extends AppCompatActivity {
      */
     public void resetTime(String toastMsg) {
         Log.d(TAG, toastMsg);
+        if (isRunning) {
+            chronometer.stop();
+            isRunning = false;
+        }
         chronometer.setBase(SystemClock.elapsedRealtime());
         pauseOffsetTime = 0;
         startTime = null;
@@ -192,8 +296,6 @@ public class Hour_Log extends AppCompatActivity {
 
         /* Setting the adapter to the ListView */
         lvStudyHourList.setAdapter(adapter);
-
-        System.out.println("numID: " + numClassId);
     }
 
     /**

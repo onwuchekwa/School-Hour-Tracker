@@ -53,7 +53,7 @@ public class ClassNavigationOptions extends AppCompatActivity {
             public void onClick(View v) {
                 if(numClassId > -1) {
                     Log.d(TAG, "onBtnRecordHours: The Class ID is: " + numClassId);
-                    createIntent(Hour_Log.class);
+                    createIntent(HourLog.class);
                 } else {
                     toastMessage("There is no ID associated with that class name!");
                 }
