@@ -30,42 +30,42 @@
         <activity
             android:name=".HourLog"
             android:label="Log Hours Spend"
-            android:parentActivityName=".ClassNavigationOptions">
+            android:parentActivityName="com.android.school_hour_tracker.ClassNavigationOptions">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.android.school_hour_tracker.ClassNavigationOptions" />
         </activity>
         <activity
             android:name=".ManageClassActivity"
             android:label="Manage Class"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.android.school_hour_tracker.ClassNavigationOptions">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="com.android.school_hour_tracker.ClassNavigationOptions" />
         </activity>
         <activity
             android:name=".GenerateStudyReport"
             android:label="Generate Study Report"
-            android:parentActivityName=".HourLog">
+            android:parentActivityName="com.android.school_hour_tracker.HourLog">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HourLog" />
+                android:value="com.android.school_hour_tracker.HourLog" />
         </activity>
         <activity
             android:name=".ManageStudyHour"
             android:label="Manage Study Hour"
-            android:parentActivityName=".HourLog">
+            android:parentActivityName="com.android.school_hour_tracker.HourLog">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HourLog" />
+                android:value="com.android.school_hour_tracker.HourLog" />
         </activity>
     </application>
 

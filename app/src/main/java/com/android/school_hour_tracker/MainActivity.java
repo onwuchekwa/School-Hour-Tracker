@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.lvClassList);
 
         /* Initialize Database Helper Class */
-        mDatabaseHelper = new DatabaseHelper(this);
+        mDatabaseHelper = DatabaseHelper.getInstance(this);
         populateListView();
 
         /**
@@ -102,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
 
         /* Items from database is stored in this ArrayList variable */
         ArrayList<String> classListData = new ArrayList<>();
+
+        // Clear ArrayList
+        classListData.clear();
+
         /* Loop through the ArrayList and add its values to the Cursor */
         if(classData.getCount() == 0) {
             toastMessage("The database is empty.");
@@ -130,6 +134,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             toastMessage("Something went wrong");
         }
+    }
+
+    /**
+     * Repopulate ListView onResume
+     */
+    public void onResume() {
+        super.onResume();
+        populateListView();
     }
 
     /**

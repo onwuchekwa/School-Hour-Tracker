@@ -9,6 +9,9 @@ import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
+
+    private static DatabaseHelper mInstance = null;
+
     // Database name and version
     private static final String DATABASE_NAME = "hour_log.db";
     private static final int DATABASE_VERSION = 1;
@@ -29,6 +32,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String STUDY_RECORD_START_TIME = "recordStartTime";
     private static final String STUDY_RECORD_END_TIME = "recordEndTime";
     private static final String STUDY_RECORD_ACTUAL_TIME = "recordActualTime";
+
+    public static DatabaseHelper getInstance(Context context) {
+        if(mInstance == null) {
+            mInstance = new DatabaseHelper(context.getApplicationContext());
+        }
+        return mInstance;
+    }
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -138,11 +148,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void deleteClassData(int classId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String deleteQuery = "DELETE FROM " + CLASS_TABLE_NAME + " WHERE " +
+        String deleteStudyHistory = "DELETE FROM " + STUDY_TABLE_NAME + " WHERE " +
+                STUDY_CLASS_ID + " = '" + classId + "'";
+        String deleteClass = "DELETE FROM " + CLASS_TABLE_NAME + " WHERE " +
                 CLASS_ID + " = '" + classId + "'";
-        Log.d(TAG, "Delete class query: " + deleteQuery);
-        Log.d(TAG, "Deleting : " + classId + " from database");
-        db.execSQL(deleteQuery);
+        Log.d(TAG, "Delete study history query: " + deleteStudyHistory);
+        Log.d(TAG, "Deleting : " + classId + " from " + STUDY_TABLE_NAME +" database");
+        Log.d(TAG, "Delete class query: " + deleteClass);
+        Log.d(TAG, "Deleting : " + classId + " from " + CLASS_TABLE_NAME + " database");
+        db.execSQL(deleteStudyHistory);
+        db.execSQL(deleteClass);
     }
 
     /**
@@ -206,15 +221,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public Cursor getStudyHourId(String studyDate, String studyTime) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "SELECT " + STUDY_RECORD_ID + ", "
-                + STUDY_RECORD_START_TIME + ", " + STUDY_RECORD_END_TIME
+        String selectQuery = "SELECT " + STUDY_RECORD_ID
                 + " FROM " + STUDY_TABLE_NAME
                 + " WHERE " + STUDY_RECORD_DATE + " = '" + studyDate + "'"
                 + " AND " + STUDY_RECORD_ACTUAL_TIME + " = '" + studyTime + "'";
+        Log.d(TAG, selectQuery);
         Cursor rawData = db.rawQuery(selectQuery, null);
         return rawData;
     }
 
+    /**
+     * Generate report based on two dates
+     * @param classCode code of the class
+     * @param startDate start date of the report
+     * @param endDate end date of the report
+     * @return rawdata the actual report
+     */
     public Cursor generateReports(String classCode, String startDate, String endDate) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT " + CLASS_CODE + ", "
@@ -228,6 +250,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " AND c." + CLASS_CODE + " = '" + classCode + "'"
                 + " GROUP BY " + CLASS_CODE + ", " + CLASS_NAME
                 + " ORDER BY " + STUDY_RECORD_DATE + " DESC;";
+        Log.d(TAG, selectQuery);
+        Cursor rawData = db.rawQuery(selectQuery, null);
+        return rawData;
+    }
+
+    /**
+     * deletes study record from the database
+     * @param studyId get class id from intent
+     */
+    public void deleteStudyRecord(int studyId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteStudyHistory = "DELETE FROM " + STUDY_TABLE_NAME + " WHERE " +
+                STUDY_RECORD_ID + " = '" + studyId + "'";
+        Log.d(TAG, "Delete study history query: " + deleteStudyHistory);
+        Log.d(TAG, "Deleting : " + studyId + " from " + STUDY_TABLE_NAME +" database");
+        db.execSQL(deleteStudyHistory);
+    }
+
+    /**
+     * Updates study record table
+     * @param studyId studyId
+     * @param actualStudyTime actualStudyTime
+     */
+    public void updateStudyRecordData(int studyId, String actualStudyTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String updateQuery = "UPDATE " + STUDY_TABLE_NAME
+                + " SET " + STUDY_RECORD_ACTUAL_TIME + " = '" + actualStudyTime + "'"
+                + " WHERE " + STUDY_RECORD_ID + " = '" + studyId + "'";
+        Log.d(TAG, "Update study record query: " + updateQuery);
+        Log.d(TAG, "Updating actual study time to: " + actualStudyTime);
+        db.execSQL(updateQuery);
+    }
+
+    /**
+     * Get a single report based on study id
+     * @param studyId study id
+     * @return single report details
+     */
+    public Cursor generateSingleStudyReport(int studyId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT " + STUDY_RECORD_ID + ", "
+                + STUDY_RECORD_DATE + ", "
+                + STUDY_RECORD_START_TIME + ", "
+                + STUDY_RECORD_END_TIME + ", "
+                + "TIME(SUM(STRFTIME('%s', " + STUDY_RECORD_END_TIME + ") - STRFTIME('%s', '00:00:00')) - SUM(STRFTIME('%s', " + STUDY_RECORD_START_TIME + ") - STRFTIME('%s', '00:00:00')), 'unixepoch') AS timeSpend, "
+                + "TIME(SUM(STRFTIME('%s', " + STUDY_RECORD_ACTUAL_TIME + ") - STRFTIME('%s', '00:00:00')), 'unixepoch') AS ActualStudyTime"
+                + " FROM " + STUDY_TABLE_NAME
+                + " WHERE " + STUDY_RECORD_ID  + " = '" + studyId + "'";
         Log.d(TAG, selectQuery);
         Cursor rawData = db.rawQuery(selectQuery, null);
         return rawData;

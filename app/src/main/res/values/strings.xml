@@ -24,4 +24,11 @@
     <string name="btn_view">View</string>
     <string name="btn_edit">Edit</string>
     <string name="btn_del">Delete</string>
+    <string name="lbl_study_date">Study Date:</string>
+    <string name="lbl_start_time">Start Time:</string>
+    <string name="lbl_time_ended">End Time:</string>
+    <string name="lbl_time_spend">Time Spend plus Break(s):</string>
+    <string name="lbl_actual_time">Time Spend minus Breaks(s):</string>
+    <string name="edit_time_spend">Enter Time Spend</string>
+    <string name="btn_update_time">Update</string>
 </resources>

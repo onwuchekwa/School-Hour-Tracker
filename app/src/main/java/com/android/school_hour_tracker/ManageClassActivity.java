@@ -1,9 +1,12 @@
 package com.android.school_hour_tracker;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,15 +36,17 @@ public class ManageClassActivity extends AppCompatActivity {
         classText = (EditText) findViewById(R.id.editClassName);
 
         /* Initialize Database Helper Class */
-        mDatabaseHelper = new DatabaseHelper(this);
+        mDatabaseHelper = DatabaseHelper.getInstance(this);
 
         // Get Intent from the MainActivity
-        Intent intent = getIntent();
+        Bundle intent = getIntent().getExtras();
 
         // Get Class ID passed from an extra
-        numClassId = intent.getIntExtra("classId", -1);
-        strClassCode = intent.getStringExtra("classCode");
-        strClassName = intent.getStringExtra("className");
+        if(intent != null) {
+            numClassId = intent.getInt("classId", -1);
+            strClassCode = intent.getString("classCode");
+            strClassName = intent.getString("className");
+        }
 
         /* Pass text to the EditText fields */
         classId.setText(strClassCode);
@@ -72,13 +77,57 @@ public class ManageClassActivity extends AppCompatActivity {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabaseHelper.deleteClassData(numClassId);
-                classId.setText("");
-                classText.setText("");
-                Log.d(TAG, "onBtnDelete: Class has been updated with new data");
-                toastMessage("Class has been deleted from the database");
+                AlertDialog.Builder builder = new AlertDialog.Builder(ManageClassActivity.this);
+                builder.setTitle("Confirm Delete Class");
+                builder.setMessage("Deleting this class will also delete all study records for this class. Are you sure you want to delete?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDatabaseHelper.deleteClassData(numClassId);
+                        Log.d(TAG, "onBtnDelete: Class has been and study records has been deleted");
+                        toastMessage("Class has been deleted from the database");
+                        dialog.dismiss();
+                        Intent intent = new Intent( ManageClassActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.show();
             }
         });
+    }
+
+    /**
+     * Check if BackButton menu item is selected
+     * @param item get backButton menu item
+     * @return selected item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Pass Intent when BackButton is pressed
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent( ManageClassActivity.this, ClassNavigationOptions.class);
+        intent.putExtras(getIntent());
+        startActivity(intent);
+        finish();
     }
 
     /**

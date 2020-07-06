@@ -22,20 +22,22 @@ public class ClassNavigationOptions extends AppCompatActivity {
         setContentView(R.layout.activity_class_navigation_options);
 
         /* Reference to the TextView of the layout activity_class_navigation_options.xml */
-        lblClassCode = (TextView) findViewById(R.id.tvClassCode);
-        lblClassName = (TextView) findViewById(R.id.tvClassName);
+        lblClassCode = (TextView) findViewById(R.id.tvLblClassCode);
+        lblClassName = (TextView) findViewById(R.id.tvClassCode);
 
         /* Reference to the Button of the layout activity_class_navigation_options.xml */
         btnManageClass = (Button) findViewById(R.id.btnManage);
         btnRecordHours = (Button) findViewById(R.id.btnRecord);
 
         // Get Intent from the MainActivity
-        Intent intent = getIntent();
+        Bundle intent = getIntent().getExtras();
 
         // Get Class ID passed from an extra
-        numClassId = intent.getIntExtra("classId", -1);
-        strClassCode = intent.getStringExtra("classCode");
-        strClassName = intent.getStringExtra("className");
+        if(intent != null) {
+            numClassId = intent.getInt("classId", -1);
+            strClassCode = intent.getString("classCode");
+            strClassName = intent.getString("className");
+        }
 
         /* Pass text to the EditText fields */
         if((!strClassCode.equals("")) && (!strClassName.equals(""))) {
@@ -85,7 +87,9 @@ public class ClassNavigationOptions extends AppCompatActivity {
         intent.putExtra("classId", numClassId);
         intent.putExtra("classCode", strClassCode);
         intent.putExtra("className", strClassName);
+        intent.putExtras(getIntent());
         startActivity(intent);
+        finish();
     }
 
     /**

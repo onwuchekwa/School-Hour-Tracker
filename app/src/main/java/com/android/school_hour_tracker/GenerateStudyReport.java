@@ -3,10 +3,10 @@ package com.android.school_hour_tracker;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -56,12 +56,14 @@ public class GenerateStudyReport extends AppCompatActivity {
         mCalender = Calendar.getInstance();
 
         // Get Intent from the MainActivity
-        Intent intent = getIntent();
+        Bundle intent = getIntent().getExtras();
 
         // Get Class ID passed from an extra
-        numClassId = intent.getIntExtra("classId", -1);
-        strClassCode = intent.getStringExtra("classCode");
-        strClassName = intent.getStringExtra("className");
+        if(intent != null) {
+            numClassId = intent.getInt("classId", -1);
+            strClassCode = intent.getString("classCode");
+            strClassName = intent.getString("className");
+        }
 
         // Set Text to the TextView
         tvClassInfo.setText(String.format("Select Start and End Dates to Generate Report for: %s - %s", strClassCode, strClassName));
@@ -76,7 +78,7 @@ public class GenerateStudyReport extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.lvStudyReport);
 
         /* Initialize Database Helper Class */
-        mDatabaseHelper = new DatabaseHelper(this);
+        mDatabaseHelper = DatabaseHelper.getInstance(this);
 
         editStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,8 +152,8 @@ public class GenerateStudyReport extends AppCompatActivity {
                 reportListData.add("Summary of Study Time Between " + strStartDate + " and " + strEndDate
                         + "\n\n\t\tClass: " + reportData.getString(1)
                         + "\n\t\tCode: " + reportData.getString(0)
-                        + "\n\t\tTotal Hours Spent: " + reportData.getString(2)
-                        + "\n\t\tActual Study Time: " + reportData.getString(3)
+                        + "\n\t\tTotal Time Spent With Breaks: " + reportData.getString(2)
+                        + "\n\t\tTotal Time Without Break: " + reportData.getString(3)
                 );
             }
         }
@@ -161,6 +163,30 @@ public class GenerateStudyReport extends AppCompatActivity {
 
         /* Setting the adapter to the ListView */
         listView.setAdapter(adapter);
+    }
+
+    /**
+     * Check if BackButton menu item is selected
+     * @param item get backButton menu item
+     * @return selected item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Pass Intent when BackButton is pressed
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent( GenerateStudyReport.this, HourLog.class);
+        intent.putExtras(getIntent());
+        startActivity(intent);
+        finish();
     }
 
     /**

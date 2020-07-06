@@ -1,12 +1,13 @@
 package com.android.school_hour_tracker;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,8 +40,8 @@ public class HourLog extends AppCompatActivity {
         setContentView(R.layout.activity_hour_log);
 
         /* Reference to the TextViews of the layout activity_hour_log.xml */
-        lblClassCode = (TextView) findViewById(R.id.tvClassCode);
-        lblClassName = (TextView) findViewById(R.id.tvClassName);
+        lblClassCode = (TextView) findViewById(R.id.tvLblClassCode);
+        lblClassName = (TextView) findViewById(R.id.tvClassCode);
 
         /* Reference to the Buttons of the layout activity_hour_log.xml */
         btnStart = (Button) findViewById(R.id.btn_start);
@@ -55,15 +56,17 @@ public class HourLog extends AppCompatActivity {
         lvStudyHourList = (ListView) findViewById(R.id.lvHourSpent);
 
         // Get Intent from the MainActivity
-        Intent intent = getIntent();
+        Bundle intent = getIntent().getExtras();
 
         /* Initialize Database Helper Class */
-        mDatabaseHelper = new DatabaseHelper(this);
+        mDatabaseHelper = DatabaseHelper.getInstance(this);
 
         // Get Class ID passed from an extra
-        numClassId = intent.getIntExtra("classId", -1);
-        strClassCode = intent.getStringExtra("classCode");
-        strClassName = intent.getStringExtra("className");
+        if(intent != null) {
+            numClassId = intent.getInt("classId", -1);
+            strClassCode = intent.getString("classCode");
+            strClassName = intent.getString("className");
+        }
 
         populateStudyHourListView();
 
@@ -141,7 +144,7 @@ public class HourLog extends AppCompatActivity {
             }
         });
 
-        /*
+        /**
          * Defining a click event listener for the button "Reset Time"
          */
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -190,7 +193,9 @@ public class HourLog extends AppCompatActivity {
                      intent.putExtra("classId", numClassId);
                      intent.putExtra("classCode", strClassCode);
                      intent.putExtra("className", strClassName);
-                    startActivity(intent);
+                     intent.putExtras(getIntent());
+                     startActivity(intent);
+                     finish();
                 } else {
                     toastMessage("There is no ID associated with that class name!");
                 }
@@ -208,23 +213,17 @@ public class HourLog extends AppCompatActivity {
                 String studyDate = classStudyData.substring(11, classStudyData.indexOf(",")).trim();
                 Log.d(TAG, "You clicked on " + studyDate + " and " + actualStudyTime);
                 Cursor studyIdData = mDatabaseHelper.getStudyHourId(studyDate, actualStudyTime);
-                // Log.d(TAG, DatabaseUtils.dumpCursorToString(studyIdData));
                 int singleStudyId = -1;
-                String studyTimeStarted = null, studyTimeEnded = null;
                 while (studyIdData.moveToNext()) {
                     singleStudyId = studyIdData.getInt(0);
-                    studyTimeStarted = studyIdData.getString(1);
-                    studyTimeEnded = studyIdData.getString(2);
                 }
                 if(singleStudyId > -1) {
                     Log.d(TAG, "onItemClick: The Study ID is: " + singleStudyId);
                     Intent intent = new Intent(HourLog.this, ManageStudyHour.class);
                     intent.putExtra("studyId", singleStudyId);
-                    intent.putExtra("studyDate", studyDate);
-                    intent.putExtra("actualStudyTime", actualStudyTime);
-                    intent.putExtra("studyTimeStarted", studyTimeStarted);
-                    intent.putExtra("studyTimeEnded", studyTimeEnded);
+                    intent.putExtras(getIntent());
                     startActivity(intent);
+                    finish();
                 } else {
                     toastMessage("There is no ID associated with that study date and time!");
                 }
@@ -281,6 +280,10 @@ public class HourLog extends AppCompatActivity {
 
         /* Items from database is stored in this ArrayList variable */
         ArrayList<String> studyHourListData = new ArrayList<>();
+
+        // Clear ArrayList
+        studyHourListData.clear();
+
         /* Loop through the ArrayList and add its values to the Cursor */
         if(studyHourData.getCount() == 0) {
             toastMessage("The database is empty.");
@@ -296,6 +299,38 @@ public class HourLog extends AppCompatActivity {
 
         /* Setting the adapter to the ListView */
         lvStudyHourList.setAdapter(adapter);
+    }
+
+    /**
+     * Check if BackButton menu item is selected
+     * @param item get backButton menu item
+     * @return selected item
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Pass Intent when BackButton is pressed
+     */
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent( HourLog.this, ClassNavigationOptions.class);
+        intent.putExtras(getIntent());
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Repopulate ListView onResume
+     */
+    public void onResume() {
+        super.onResume();
+        populateStudyHourListView();
     }
 
     /**
