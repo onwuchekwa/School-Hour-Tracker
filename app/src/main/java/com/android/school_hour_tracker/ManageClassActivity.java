@@ -65,6 +65,9 @@ public class ManageClassActivity extends AppCompatActivity {
                     mDatabaseHelper.updateClassData(numClassId, classCode, className);
                     toastMessage("Class has been updated with new data");
                     Log.d(TAG, "onBtnUpdate: Class has been updated with new data");
+                    Intent intent = new Intent( ManageClassActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else {
                     toastMessage("You must provide course code and course name");
                 }

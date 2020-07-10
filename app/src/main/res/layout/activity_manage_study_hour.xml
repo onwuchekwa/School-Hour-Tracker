@@ -109,11 +109,11 @@
         android:id="@+id/tvClassCode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:text="TextView"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tvLblClassCode"
-        app:layout_constraintStart_toEndOf="@+id/tvLblClassCode" />
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/tvLblClassCode"
+        app:layout_constraintTop_toBottomOf="@+id/tvClassInfo" />
 
     <TextView
         android:id="@+id/tvLblClassName"
@@ -132,7 +132,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:text="TextView"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblClassName"
         app:layout_constraintStart_toEndOf="@+id/tvLblClassName" />
 
@@ -153,7 +152,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="136dp"
         android:layout_marginLeft="136dp"
-        android:text="TextView"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblStudyDate"
         app:layout_constraintStart_toEndOf="@+id/tvLblStudyDate" />
 
@@ -174,7 +172,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="140dp"
         android:layout_marginLeft="140dp"
-        android:text="TextView"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblStartTime"
         app:layout_constraintStart_toEndOf="@+id/tvLblStartTime" />
 
@@ -195,7 +192,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="147dp"
         android:layout_marginLeft="147dp"
-        android:text="TextView"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblEndTime"
         app:layout_constraintStart_toEndOf="@+id/tvLblEndTime" />
 
@@ -211,12 +207,20 @@
         app:layout_constraintTop_toBottomOf="@+id/tvLblEndTime" />
 
     <TextView
+        android:id="@+id/tvActualTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvLblActualTime"
+        app:layout_constraintStart_toEndOf="@+id/tvLblActualTime" />
+
+    <TextView
         android:id="@+id/tvTimeSpend"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
-        android:text="TextView"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblTimeSpend"
         app:layout_constraintStart_toEndOf="@+id/tvLblTimeSpend" />
 
@@ -231,23 +235,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLblTimeSpend" />
 
-    <TextView
-        android:id="@+id/tvActualTime"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:text="TextView"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tvLblActualTime"
-        app:layout_constraintStart_toEndOf="@+id/tvLblActualTime" />
-
     <EditText
         android:id="@+id/editTimeSpend"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/edit_time_spend"
         android:inputType="textPersonName"
