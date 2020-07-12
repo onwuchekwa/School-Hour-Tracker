@@ -85,7 +85,7 @@ public class ManageStudyHour extends AppCompatActivity {
         btn_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if(intent != null) {
+                if(intent != null) {
                     getDataFromIntent();
                     edActualTime.setVisibility(View.GONE);
                     btn_update.setVisibility(View.GONE);
@@ -98,7 +98,7 @@ public class ManageStudyHour extends AppCompatActivity {
                     if(!btn_edit.isEnabled()) {
                         btn_edit.setEnabled(true);
                     }
-                //}
+                }
             }
         });
 
@@ -212,6 +212,9 @@ public class ManageStudyHour extends AppCompatActivity {
         });
     }
 
+    /**
+     * Get data passed from intent to ListViews
+     */
     public void getDataFromIntent() {
         numStudyId = intent.getInt("studyId", -1);
 

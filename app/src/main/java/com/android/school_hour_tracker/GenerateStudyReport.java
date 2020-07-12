@@ -80,6 +80,9 @@ public class GenerateStudyReport extends AppCompatActivity {
         /* Initialize Database Helper Class */
         mDatabaseHelper = DatabaseHelper.getInstance(this);
 
+        /**
+         * Defining a click event listener for the EditText "edStartDate"
+         */
         editStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +93,9 @@ public class GenerateStudyReport extends AppCompatActivity {
             }
         });
 
+        /**
+         * Defining a click event listener for the EditText "edEndDate"
+         */
         editEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +106,9 @@ public class GenerateStudyReport extends AppCompatActivity {
             }
         });
 
+        /**
+         * Defining a click event listener for the Button "btnViewReport"
+         */
         btnViewReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +122,9 @@ public class GenerateStudyReport extends AppCompatActivity {
         });
     }
 
+    /**
+     * Create Date Picker Dialog
+     */
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -129,11 +141,18 @@ public class GenerateStudyReport extends AppCompatActivity {
         }
     };
 
+    /**
+     * Add Date from the Date picker dialog to EditText
+     * @param editText holds report date
+     */
     private void addText(EditText editText) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         editText.setText(simpleDateFormat.format(mCalender.getTime()));
     }
 
+    /**
+     * Populate Study Report ListView
+     */
     public void populateReportListView() {
         Log.d(TAG, "populateReportListView: Displaying Report in the ListView");
 

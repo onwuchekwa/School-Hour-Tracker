@@ -262,6 +262,14 @@ public class HourLog extends AppCompatActivity {
         toastMessage(toastMsg);
     }
 
+    /**
+     * Adds study records to the database
+     * @param recordClassId class id
+     * @param recordDate date of study
+     * @param recordStartTime when the study started
+     * @param recordEndTime when study ended
+     * @param recordActualTime time used to study
+     */
     public void addStudyTime(int recordClassId, String recordDate, String recordStartTime, String recordEndTime,
                              String recordActualTime) {
         boolean insertData = mDatabaseHelper.addStudyRecord(recordClassId, recordDate, recordStartTime, recordEndTime, recordActualTime);
@@ -273,6 +281,9 @@ public class HourLog extends AppCompatActivity {
         }
     }
 
+    /**
+     * Populate study hour ListView
+     */
     public void populateStudyHourListView() {
         Log.d(TAG, "populateStudyHourListView: Displaying study hours in the ListView");
         //Get data and append to the list
