@@ -67,6 +67,7 @@ public class ManageStudyHour extends AppCompatActivity {
 
         // Get Class ID passed from an extra
         if(intent != null) {
+            numStudyId = intent.getInt("studyId", -1);
             numClassId = intent.getInt("classId", -1);
             lblClassCode.setText(intent.getString("classCode"));
             lblClassName.setText(intent.getString("className"));
@@ -86,7 +87,7 @@ public class ManageStudyHour extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(intent != null) {
-                    getDataFromIntent();
+                    getDataFromIntent(numStudyId);
                     edActualTime.setVisibility(View.GONE);
                     btn_update.setVisibility(View.GONE);
                     if(!grpListView.isShown()) {
@@ -109,7 +110,7 @@ public class ManageStudyHour extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(intent != null) {
-                    getDataFromIntent();
+                    getDataFromIntent(numStudyId);
                     mLblTimeSpend.setVisibility(View.GONE);
                     lblActualTime.setVisibility(View.GONE);
                     if(!grpListView.isShown()) {
@@ -140,7 +141,7 @@ public class ManageStudyHour extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         mDatabaseHelper.deleteStudyRecord(numStudyId);
                         Log.d(TAG, "onBtnDelete: Study record has been deleted");
-                        toastMessage("Study Record has been deleted from the database");
+                        toastMessage("Study Record with ID: " + numStudyId + " has been deleted from the database");
                         dialog.dismiss();
                         Intent intent = new Intent( ManageStudyHour.this, HourLog.class);
                         intent.putExtras(getIntent());
@@ -215,9 +216,7 @@ public class ManageStudyHour extends AppCompatActivity {
     /**
      * Get data passed from intent to ListViews
      */
-    public void getDataFromIntent() {
-        numStudyId = intent.getInt("studyId", -1);
-
+    public void getDataFromIntent(int numStudyId) {
         Cursor singleStudyReport = mDatabaseHelper.generateSingleStudyReport(numStudyId);
         int singleStudyId = -1;
         String studyDate = null, studyStartTime = null, studyEndTime = null, timeSpend = null, actualTime = null;
