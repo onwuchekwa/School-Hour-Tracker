@@ -190,10 +190,10 @@ public class HourLog extends AppCompatActivity {
                 if(numClassId > -1) {
                      Log.d(TAG, "btnGetReport: The Class ID is: " + numClassId);
                      Intent intent = new Intent(HourLog.this, GenerateStudyReport.class);
+                     intent.putExtras(getIntent());
                      intent.putExtra("classId", numClassId);
                      intent.putExtra("classCode", strClassCode);
                      intent.putExtra("className", strClassName);
-                     intent.putExtras(getIntent());
                      startActivity(intent);
                      finish();
                 } else {
@@ -220,8 +220,8 @@ public class HourLog extends AppCompatActivity {
                 if(singleStudyId > -1) {
                     Log.d(TAG, "onItemClick: The Study ID is: " + singleStudyId);
                     Intent intent = new Intent(HourLog.this, ManageStudyHour.class);
-                    intent.putExtra("studyId", singleStudyId);
                     intent.putExtras(getIntent());
+                    intent.putExtra("studyId", singleStudyId);
                     startActivity(intent);
                     finish();
                 } else {

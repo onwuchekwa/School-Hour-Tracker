@@ -84,10 +84,10 @@ public class ClassNavigationOptions extends AppCompatActivity {
      */
     public void createIntent(Class nameOfClass) {
         Intent intent = new Intent(ClassNavigationOptions.this, nameOfClass);
+        intent.putExtras(getIntent());
         intent.putExtra("classId", numClassId);
         intent.putExtra("classCode", strClassCode);
         intent.putExtra("className", strClassName);
-        intent.putExtras(getIntent());
         startActivity(intent);
         finish();
     }

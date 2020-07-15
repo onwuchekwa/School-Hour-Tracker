@@ -87,7 +87,7 @@ public class ManageStudyHour extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(intent != null) {
-                    getDataFromIntent(numStudyId);
+                    getDataFromIntent();
                     edActualTime.setVisibility(View.GONE);
                     btn_update.setVisibility(View.GONE);
                     if(!grpListView.isShown()) {
@@ -110,7 +110,7 @@ public class ManageStudyHour extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(intent != null) {
-                    getDataFromIntent(numStudyId);
+                    getDataFromIntent();
                     mLblTimeSpend.setVisibility(View.GONE);
                     lblActualTime.setVisibility(View.GONE);
                     if(!grpListView.isShown()) {
@@ -132,6 +132,7 @@ public class ManageStudyHour extends AppCompatActivity {
         btn_del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                numStudyId = intent.getInt("studyId", -1);
                 AlertDialog.Builder builder = new AlertDialog.Builder(ManageStudyHour.this);
                 builder.setTitle("Confirm Delete Class");
                 builder.setMessage("This action, when confirmed, cannot be reversed. Are you sure you want to proceed?");
@@ -216,7 +217,8 @@ public class ManageStudyHour extends AppCompatActivity {
     /**
      * Get data passed from intent to ListViews
      */
-    public void getDataFromIntent(int numStudyId) {
+    public void getDataFromIntent() {
+        numStudyId = intent.getInt("studyId", -1);
         Cursor singleStudyReport = mDatabaseHelper.generateSingleStudyReport(numStudyId);
         int singleStudyId = -1;
         String studyDate = null, studyStartTime = null, studyEndTime = null, timeSpend = null, actualTime = null;
