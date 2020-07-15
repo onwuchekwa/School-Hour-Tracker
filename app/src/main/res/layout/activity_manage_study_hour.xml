@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="@string/lbl_start_time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLblStudyDate" />
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:text="@string/lbl_time_spend"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLblEndTime" />
@@ -102,7 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:text="@string/lbl_time_ended"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLblStartTime" />
@@ -113,7 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:text="@string/lbl_actual_time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLblTimeSpend" />
@@ -220,8 +220,8 @@
         android:id="@+id/tvStudyDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="136dp"
-        android:layout_marginLeft="136dp"
+        android:layout_marginStart="145dp"
+        android:layout_marginLeft="145dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblStudyDate"
         app:layout_constraintStart_toEndOf="@+id/tvLblStudyDate" />
 
@@ -229,8 +229,8 @@
         android:id="@+id/tvStartTIme"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
-        android:layout_marginLeft="140dp"
+        android:layout_marginStart="147dp"
+        android:layout_marginLeft="147dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblStartTime"
         app:layout_constraintStart_toEndOf="@+id/tvLblStartTime" />
 
@@ -238,8 +238,8 @@
         android:id="@+id/tvEndTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="147dp"
-        android:layout_marginLeft="147dp"
+        android:layout_marginStart="155dp"
+        android:layout_marginLeft="155dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblEndTime"
         app:layout_constraintStart_toEndOf="@+id/tvLblEndTime" />
 
@@ -247,8 +247,8 @@
         android:id="@+id/tvActualTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginStart="29dp"
+        android:layout_marginLeft="29dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblActualTime"
         app:layout_constraintStart_toEndOf="@+id/tvLblActualTime" />
 
@@ -256,8 +256,8 @@
         android:id="@+id/tvTimeSpend"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/tvLblTimeSpend"
         app:layout_constraintStart_toEndOf="@+id/tvLblTimeSpend" />
 

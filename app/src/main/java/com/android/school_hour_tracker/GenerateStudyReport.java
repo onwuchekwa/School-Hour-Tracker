@@ -66,7 +66,7 @@ public class GenerateStudyReport extends AppCompatActivity {
         }
 
         // Set Text to the TextView
-        tvClassInfo.setText(String.format("Select Start and End Dates to Generate Report for: %s - %s", strClassCode, strClassName));
+        tvClassInfo.setText(String.format("Select Start and End Date(s) to Generate Report for: %s - %s", strClassCode, strClassName));
 
         // Assign Calendar Variables
         year = mCalender.get(Calendar.YEAR);
@@ -171,8 +171,8 @@ public class GenerateStudyReport extends AppCompatActivity {
                 reportListData.add("Summary of Study Time Between " + strStartDate + " and " + strEndDate
                         + "\n\n\t\tClass: " + reportData.getString(1)
                         + "\n\t\tCode: " + reportData.getString(0)
-                        + "\n\t\tTotal Time Spent With Breaks: " + reportData.getString(2)
-                        + "\n\t\tTotal Time Without Break: " + reportData.getString(3)
+                        + "\n\t\tTotal Time Spent With Break(s): " + reportData.getString(2)
+                        + "\n\t\tTotal Time Without Break(s): " + reportData.getString(3)
                 );
             }
         }
